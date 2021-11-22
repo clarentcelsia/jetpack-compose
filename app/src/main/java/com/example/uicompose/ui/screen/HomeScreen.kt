@@ -3,6 +3,7 @@ package com.example.uicompose.ui.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
@@ -20,7 +21,7 @@ import com.example.uicompose.ui.theme.Purple200
 
 @Composable
 fun HomeScreen(text: String) {
-    Column {
+    Row {
         Text(
             text = text,
             color = Purple200,
@@ -30,7 +31,6 @@ fun HomeScreen(text: String) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .background(Color.Black)
-                .fillMaxWidth()
                 .weight(3f)
                 .border(1.5.dp, Color.White, RectangleShape)
                 .padding(10.dp)
@@ -45,7 +45,6 @@ fun HomeScreen(text: String) {
             textAlign = TextAlign.Left,
             modifier = Modifier
                 .background(Color.DarkGray)
-                .fillMaxWidth()
                 .weight(2f)
                 .border(1.5.dp, Color.White, RectangleShape)
                 .padding(start = 10.dp)
@@ -60,10 +59,9 @@ fun HomeScreen(text: String) {
             textAlign = TextAlign.Right,
             modifier = Modifier
                 .background(Color.White)
-                .fillMaxWidth()
                 .weight(1f)
                 .border(1.5.dp, Color.Black, RectangleShape)
-                .padding(end = 10.dp)
+                .padding(start = 10.dp)
         )
     }
 }
