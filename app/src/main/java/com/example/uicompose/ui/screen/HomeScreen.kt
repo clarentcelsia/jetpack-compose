@@ -1,65 +1,112 @@
 package com.example.uicompose.ui.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlin.random.Random
+import com.example.uicompose.ui.theme.Purple200
+import kotlinx.coroutines.launch
 
 // https://developer.android.com/jetpack/compose/state
 @Composable
 fun HomeScreen() {
+    Scaffolds()
+}
+
+@Composable
+fun Buttons() {
     Column {
-        ClickBox()
-        TextFIeld()
-    }
-}
+        Button(
+            onClick = { },
+            contentPadding = PaddingValues(
+                top = 8.dp,
+                bottom = 8.dp,
+                start = 12.dp,
+                end = 12.dp
+            ),
+            enabled = true,
+            colors = ButtonDefaults.buttonColors(Purple200)
+        ) {
+            //Inner content including an icon and a text label
+            Icon(
+                Icons.Filled.Face,
+                "myface",
+                modifier = Modifier.size(ButtonDefaults.IconSize)
+            )
+            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+            Text(text = "Click Me!")
+        }
 
-@Composable
-fun TextFIeld(modifier: Modifier = Modifier) {
-    //Name yang akan diobserve setiap saat.
-    var name by remember { mutableStateOf("") }
+        Spacer(modifier = Modifier.height(10.dp))
 
-    OutlinedTextField(
-        value = name,
-        onValueChange = { name = it },
-        modifier = Modifier.fillMaxWidth()
-    )
-
-    Text(text = name, color = Color.Black)
-}
-
-@Composable
-fun ClickBox(
-    modifier: Modifier = Modifier
-) {
-    //Berubah pada saat tertentu
-    val color = remember { mutableStateOf(Color.Green) }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .background(color.value)
-            .clickable {
-                //Change color every time box is clicked
-                color.value = Color(
-                    Random.nextFloat(),
-                    Random.nextFloat(),
-                    Random.nextFloat()
+        ExtendedFloatingActionButton(
+            text = {
+                Text(text = "Save me!")
+            },
+            onClick = { },
+            icon = {
+                Icon(
+                    Icons.Filled.Notifications,
+                    contentDescription = "save me"
                 )
-
             }
-    )
+        )
+    }
+
+}
+
+//https://developer.android.com/jetpack/compose/layouts/material
+// Layout
+@Composable
+fun Scaffolds() {
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopAppBar(
+                backgroundColor = Purple200,
+                elevation = 5.dp
+            ) {
+                //Row content
+            }
+        },
+        bottomBar = {
+            BottomAppBar(backgroundColor = Purple200, elevation = 5.dp) {
+                //content
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                scope.launch {
+                    val result = scaffoldState.snackbarHostState
+                        .showSnackbar("Show snackbar")
+
+                    when(result){
+                        SnackbarResult.ActionPerformed ->{}
+                        SnackbarResult.Dismissed->{}
+                    }
+                }
+            }, backgroundColor = Purple200) {
+                Text(text = "Button")
+            }
+        },
+        isFloatingActionButtonDocked = true
+    ) {
+        //screen content
+        Column {
+            Text(text = "Hello")
+            Spacer(modifier = Modifier.height(10.dp))
+            Buttons()
+        }
+
+    }
 }
 
 @Preview
