@@ -4,13 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +18,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreen() {
-    BottomDrawers()
+    BottomSheet()
 }
 
 @Composable
@@ -125,6 +121,79 @@ fun BottomDrawers() {
         }
     }
 
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun BottomSheet() {
+    val scope = rememberCoroutineScope()
+    val state = rememberBottomSheetScaffoldState()
+    BottomSheetScaffold(
+        scaffoldState = state,
+        backgroundColor = Purple200,
+        sheetElevation = 8.dp,
+        topBar = {
+            TopAppBar(
+                title = { Text("Bottom sheet scaffold") },
+                navigationIcon = {
+                    IconButton(onClick = { scope.launch { state.drawerState.open() } }) {
+                        Icon(Icons.Default.Menu, contentDescription = "Localized description")
+                    }
+                }
+            )
+        },
+        floatingActionButton = {
+            var clickCount by remember { mutableStateOf(0) }
+            FloatingActionButton(
+                onClick = {
+                    // show snackbar as a suspend function
+                    scope.launch {
+                        state.snackbarHostState.showSnackbar("Snackbar #${++clickCount}")
+                    }
+                }
+            ) {
+                Icon(Icons.Default.Favorite, contentDescription = "Localized description")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        sheetPeekHeight = 125.dp,
+        drawerContent = {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Drawer content")
+                Spacer(Modifier.height(20.dp))
+                Button(onClick = { scope.launch { state.drawerState.close() } }) {
+                    Text("Click to close drawer")
+                }
+            }
+        },
+        sheetContent = {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Swipe up")
+            }
+            Column {
+                Button(onClick = {
+                    scope.launch {
+                        if (state.bottomSheetState.isCollapsed) state.bottomSheetState.expand()
+                        else state.bottomSheetState.collapse()
+                    }})
+                {
+                    Text(text = "Click")
+                }
+                Text(text = "Bottom Sheet Content")
+            }
+        }) {
+        //screen content
+    }
 }
 
 @ExperimentalMaterialApi
