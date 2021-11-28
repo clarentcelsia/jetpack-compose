@@ -2,7 +2,9 @@ package com.example.uicompose.ui.screen
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -15,23 +17,25 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.*
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.uicompose.R
+import com.example.uicompose.ui.theme.LightPurple200
+import com.example.uicompose.ui.theme.LightPurple2200
 import com.example.uicompose.ui.theme.Purple200
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreen() {
@@ -39,6 +43,7 @@ fun HomeScreen() {
 
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun Navigation() {
@@ -46,37 +51,6 @@ fun Navigation() {
     val scope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = {
-            TopAppBar(backgroundColor = Purple200, elevation = 0.dp) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Icon(Icons.Filled.Menu, contentDescription = "menu", Modifier.clickable {
-                        scope.launch {
-                            if (scaffoldState.drawerState.isClosed) scaffoldState.drawerState.open()
-                            else scaffoldState.drawerState.close()
-                        }
-                    })
-                    Image(
-                        painter = painterResource(id = R.drawable.profile),
-                        contentDescription = "imageprofile",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clip(CircleShape)
-                            .clickable {
-                                scope.launch {
-                                    scaffoldState.snackbarHostState.showSnackbar("My Profile")
-                                }
-                            }
-                    )
-                }
-
-            }
-        },
         drawerGesturesEnabled = true,
         drawerContent = {
             Column {
@@ -243,6 +217,7 @@ fun Navigation() {
 
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun Contents(scope: CoroutineScope, state: ScaffoldState) {
@@ -254,25 +229,65 @@ fun Contents(scope: CoroutineScope, state: ScaffoldState) {
                 .background(Purple200)
                 .align(TopCenter)
         ) {
-            Text(
-                buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            Color.Red,
-                            fontWeight = Bold,
-                            fontSize = 45.sp
-                        )
-                    ) {
-                        append("Q")
-                    }
-                    append("uiz")
-                },
-                fontSize = 32.sp,
-                fontFamily = FontFamily.SansSerif,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Canvas(Modifier.fillMaxSize(), onDraw = {
+                val canvasWidth = size.width
+                val canvasHeight = size.height
+                drawCircle(
+                    LightPurple200,
+                    center = Offset.Zero,
+                    radius = size.minDimension / 3
+                )
+
+                drawCircle(
+                    LightPurple200,
+                    center = Offset(x = canvasWidth, y = canvasHeight / 2),
+                    radius = size.minDimension / 3
+                )
+
+                drawCircle(
+                    LightPurple200,
+                    radius = size.minDimension / 3
+                )
+
+                drawCircle(
+                    LightPurple2200,
+                    radius = size.minDimension / 4
+                )
+
+                drawCircle(
+                    Color.White,
+                    radius = size.minDimension / 4.7f
+                )
+            })
+
+            Icon(Icons.Filled.ArrowBack, contentDescription = "back",
+                Modifier
+                    .padding(12.dp)
+                    .size(24.dp)
+                    .clickable {
+                        scope.launch { state.snackbarHostState.showSnackbar("Arrow Back") }
+                    })
+
+            Column(
+                Modifier.align(Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Text(
+                    text = "Score",
+                    fontSize = 16.sp,
+                    color = Purple200
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "150",
+                    fontSize = 33.sp,
+                    color = Purple200,
+                    fontWeight = Bold
+                )
+            }
         }
+
         Box(
             modifier = Modifier
                 .background(Color.White)
@@ -287,120 +302,386 @@ fun Contents(scope: CoroutineScope, state: ScaffoldState) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Box(Modifier.background(Color.Transparent)) {
                 Card(
                     Modifier
                         .fillMaxWidth(0.8f)
-                        .height(180.dp)
+                        .height(135.dp)
                         .padding(top = 25.dp),
                     shape = RoundedCornerShape(8.dp),
                     elevation = 8.dp
                 ) {
-                    Column(
-                        Modifier.fillMaxWidth().padding(10.dp),
+                    Column(Modifier.padding(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
-                            text = "Questions",
-                            fontWeight = Bold,
-                            fontSize = 14.sp,
-                            color = Purple200
+                        LazyVerticalGrid(
+                            cells = GridCells.Fixed(2),
+                            content = {
+                                item {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .background(Purple200)
+                                                .size(5.dp)
+                                        )
+                                        Text(
+                                            buildAnnotatedString {
+                                                withStyle(
+                                                    style = SpanStyle(
+                                                        color = Purple200,
+                                                        fontSize = 15.sp,
+                                                        fontWeight = Bold
+                                                    )
+                                                ) {
+                                                    append("100%\n")
+                                                }
+                                                append("Completion")
+                                            },
+                                            fontSize = 12.sp,
+                                            color = Color.DarkGray
+                                        )
+                                    }
+                                }
+                                item {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .background(Purple200)
+                                                .size(5.dp)
+                                        )
+                                        Text(
+                                            buildAnnotatedString {
+                                                withStyle(
+                                                    SpanStyle(
+                                                        Purple200, fontSize = 15.sp,
+                                                        fontWeight = Bold
+                                                    )
+                                                ) {
+                                                    append("20\n")
+                                                }
+                                                append("Total Question")
+                                            },
+                                            fontSize = 12.sp,
+                                            color = Color.DarkGray
+                                        )
+                                    }
+                                }
+                            }
                         )
-                        Spacer(modifier = Modifier.height(25.dp))
-                        Text(
-                            text = "Who is the first president of America ?",
-                            fontSize = 18.sp,
-                            color = Color.DarkGray,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 1.5.em
+
+                        LazyVerticalGrid(
+                            cells = GridCells.Fixed(2),
+                            content = {
+                                item {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .background(Color.Green)
+                                                .size(5.dp)
+                                        )
+                                        Text(
+                                            buildAnnotatedString {
+                                                withStyle(
+                                                    SpanStyle(
+                                                        Color.Green,
+                                                        fontWeight = Bold,
+                                                        fontSize = 15.sp
+                                                    )
+                                                ) {
+                                                    append("15\n")
+                                                }
+                                                append("Correct")
+                                            },
+                                            fontSize = 12.sp,
+                                            color = Color.DarkGray
+                                        )
+                                    }
+                                }
+                                item {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .background(Color.Red)
+                                                .size(5.dp)
+                                        )
+                                        Text(
+                                            buildAnnotatedString {
+                                                withStyle(
+                                                    SpanStyle(
+                                                        Color.Red,
+                                                        fontSize = 15.sp,
+                                                        fontWeight = Bold
+                                                    )
+                                                ) {
+                                                    append("05\n")
+                                                }
+                                                append("Wrong")
+                                            },
+                                            fontSize = 12.sp,
+                                            color = Color.DarkGray
+                                        )
+                                    }
+                                }
+                            }
                         )
                     }
                 }
-
-                Text(
-                    text = "12",
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .border(1.dp, Purple200, CircleShape)
-                        .clip(CircleShape)
-                        .background(Color.White)
-                        .padding(16.dp)
-                        .align(TopCenter)
-                )
             }
-            LazyColumn(contentPadding = PaddingValues(50.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+            LazyVerticalGrid(
+                cells = GridCells.Fixed(3),
+                contentPadding = PaddingValues(50.dp),
                 content = {
                     item {
-                        Text(text = "Barack Obama",
-                            Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    BorderStroke(1.dp, Color.LightGray),
-                                    RoundedCornerShape(16.dp)
+                        Box(Modifier.aspectRatio(1f).padding(8.dp)) {
+                            Column(
+                                Modifier.align(Center).clickable {
+                                    scope.launch {
+                                        state.snackbarHostState.showSnackbar("Play Again")
+                                    }
+                                },
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray)){
+
+                                    Icon(
+                                        Icons.Filled.Refresh,
+                                        contentDescription = "refresh",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .align(Center)
+                                    )
+                                }
+
+                                Text(
+                                    text = "Play Again",
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 3.dp),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
                                 )
-                                .padding(16.dp)
-                                .clickable {
-                                    scope.launch {
-                                        state.snackbarHostState.showSnackbar("Barack Obama")
-                                    }
-                                })
+                            }
+                        }
                     }
-
                     item {
-                        Text(
-                            text = "George Washington",
-                            Modifier
-                                .fillMaxWidth()
-                                .border(BorderStroke(1.5.dp, Purple200), RoundedCornerShape(16.dp))
-                                .padding(16.dp)
-                                .clickable {
+                        Box(Modifier.aspectRatio(1f).padding(8.dp)) {
+                            Column(
+                                Modifier.align(Center).clickable {
                                     scope.launch {
-                                        state.snackbarHostState.showSnackbar("George Washington")
+                                        state.snackbarHostState.showSnackbar("Review")
                                     }
+                                },
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray)) {
+
+                                    Icon(
+                                        painterResource(id = R.drawable.review),
+                                        contentDescription = "review",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .background(Color.Gray)
+                                            .align(Center)
+                                    )
                                 }
-                        )
-                    }
-
-                    item {
-                        Text(
-                            text = "John F. Kennedy",
-                            Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    BorderStroke(1.dp, Color.LightGray),
-                                    RoundedCornerShape(16.dp)
+                                Text(
+                                    text = "Review Answer",
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 3.dp),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
                                 )
-                                .padding(16.dp)
-                                .clickable {
-                                    scope.launch {
-                                        state.snackbarHostState.showSnackbar("John F. Kennedy")
-                                    }
-                                }
-                        )
+                            }
+                        }
                     }
-
                     item {
-                        Text(
-                            text = "Donald Trump",
-                            Modifier
-                                .fillMaxWidth()
-                                .border(BorderStroke(1.5.dp, Color.Red), RoundedCornerShape(16.dp))
-                                .padding(16.dp)
-                                .clickable {
+                        Box(Modifier.aspectRatio(1f).padding(8.dp)) {
+                            Column(
+                                Modifier.align(Center).clickable {
                                     scope.launch {
-                                        state.snackbarHostState.showSnackbar("Donald Trump")
+                                        state.snackbarHostState.showSnackbar("Review")
                                     }
+                                },
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray)) {
+
+                                    Icon(
+                                        Icons.Filled.Share,
+                                        contentDescription = "share",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .background(Color.Gray)
+                                            .align(Center)
+                                    )
                                 }
-                        )
+                                Text(
+                                    text = "Share",
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 3.dp),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+                            }
+                        }
+                    }
+                    item {
+                        Box(Modifier.aspectRatio(1f).padding(8.dp)) {
+                            Column(
+                                Modifier.align(Center).clickable {
+                                    scope.launch {
+                                        state.snackbarHostState.showSnackbar("Review")
+                                    }
+                                },
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray)) {
+
+                                    Icon(
+                                        Icons.Filled.ShoppingCart,
+                                        contentDescription = "Shop",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .background(Color.Gray)
+                                            .align(Center)
+                                    )
+                                }
+                                Text(
+                                    text = "Shop",
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 3.dp),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+                            }
+                        }
+                    }
+                    item {
+                        Box(Modifier.aspectRatio(1f).padding(8.dp)) {
+                            Column(
+                                Modifier.align(Center).clickable {
+                                    scope.launch {
+                                        state.snackbarHostState.showSnackbar("Review")
+                                    }
+                                },
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray)) {
+
+                                    Icon(
+                                        Icons.Filled.Home,
+                                        contentDescription = "Home",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .background(Color.Gray)
+                                            .align(Center)
+                                    )
+                                }
+                                Text(
+                                    text = "Home",
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 3.dp),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+                            }
+                        }
+                    }
+                    item {
+                        Box(Modifier.aspectRatio(1f).padding(8.dp)) {
+                            Column(
+                                Modifier.align(Center).clickable {
+                                    scope.launch {
+                                        state.snackbarHostState.showSnackbar("Leaderboard")
+                                    }
+                                },
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray)) {
+
+                                    Icon(
+                                        painterResource(id = R.drawable.leaderboard),
+                                        contentDescription = "leaderboard",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .background(Color.Gray)
+                                            .align(Center)
+                                    )
+                                }
+                                Text(
+                                    text = "Leaderboard",
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 3.dp),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+                            }
+                        }
                     }
                 })
         }
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Preview
 @Composable
