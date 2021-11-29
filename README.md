@@ -15,3 +15,4 @@ Part2-Question & Part3-Score
 [<img width="200" alt="portfolio_view" src="https://github.com/clarentcelsia/Assets/blob/main/quiz.png">
 <img width="200" alt="portfolio_view" src="https://github.com/clarentcelsia/Assets/blob/main/score.png">]
 
+UI Inspired by: MorsalinSarker
